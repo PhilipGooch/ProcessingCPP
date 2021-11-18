@@ -96,42 +96,20 @@ namespace Processing
 
 	void Application::ellipse(int x, int y, int a, int b)
 	{
-		int quality = 50;
-		sf::ConvexShape e;
-		e.setPointCount(quality);
-		e.setFillColor(m_fillColor);
-		e.setOutlineColor(m_strokeColor);
-		e.setOutlineThickness(m_strokeWeight);
-		e.setPosition(sf::Vector2f(x, y));
-		switch (m_ellipseMode)
-		{
-		case CENTER:
-			for (int i = 0; i < quality; i++)
-			{
-				float rad = (360 / quality * i) / (360 / PI / 2);
-				float px = cos(rad) * a;
-				float py = sin(rad) * b;
-				e.setPoint(i, sf::Vector2f(px, py));
-			}
-			break;
-		case RADIUS:
-			for (int i = 0; i < quality; i++)
-			{
-				float rad = (360 / quality * i) / (360 / PI / 2);
-				float px = cos(rad) * a / 2;
-				float py = sin(rad) * b / 2;
-				e.setPoint(i, sf::Vector2f(px, py));
-			}
-			break;
-		case CORNER:
-			break;
-		case CORNERS:
-			break;
-		default:
-			break;
-		}
+		sf::CircleShape inside;
+		inside.setFillColor(m_fillColor);
+		inside.setPosition(sf::Vector2f(x, y));
+		inside.setRadius(0.5f);
+		inside.scale(sf::Vector2f(a, b));
 		
-		m_renderWindow->draw(e);
+		sf::CircleShape outside;
+		outside.setFillColor(m_strokeColor);
+		outside.setPosition(sf::Vector2f(x - m_strokeWeight, y - m_strokeWeight));
+		outside.setRadius(0.5f);
+		outside.scale(sf::Vector2f(a + m_strokeWeight * 2, b + m_strokeWeight * 2));
+
+		m_renderWindow->draw(outside);
+		m_renderWindow->draw(inside);
 	}
 
 	void Application::ellipseMode(MODE mode)
