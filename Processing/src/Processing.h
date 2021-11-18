@@ -4,6 +4,9 @@
 
 #include <iostream>
 
+#define PI 3.141592653589f
+#define HALF_PI PI / 2
+
 namespace Processing
 {
 	class __declspec(dllexport) Application
@@ -15,7 +18,7 @@ namespace Processing
 		void run();
 
 	protected:
-		enum RECT_MODE
+		enum MODE
 		{
 			CORNER,
 			CORNERS,
@@ -33,9 +36,12 @@ namespace Processing
 
 		void size(int width, int height);
 		void rect(int x, int y, int a, int b);
+		void circle(int x, int y, int r);
+		void ellipse(int x, int y, int a, int b);
+		void ellipseMode(MODE mode);
 		void background(float rgb);
 		void background(float r, float g, float b);
-		void rectMode(RECT_MODE mode);
+		void rectMode(MODE mode);
 		void fill(float rgb);
 		void fill(float rgb, float a);
 		void fill(float r, float g, float b);
@@ -48,13 +54,14 @@ namespace Processing
 		void noStroke();
 
 	private:
-		sf::RenderWindow* g_renderWindow;
-		bool g_running = true;
-		RECT_MODE g_rectMode = CORNER;
-		sf::Color g_backgroundColor = sf::Color(200, 200, 200);
-		sf::Color g_fillColor = sf::Color::White;
-		sf::Color g_strokeColor = sf::Color::Black;
-		int g_strokeWeight = 1;
+		sf::RenderWindow* m_renderWindow;
+		bool m_running = true;
+		MODE m_rectMode = CORNER;
+		MODE m_ellipseMode = RADIUS;
+		sf::Color m_backgroundColor = sf::Color(200, 200, 200);
+		sf::Color m_fillColor = sf::Color::White;
+		sf::Color m_strokeColor = sf::Color::Black;
+		int m_strokeWeight = 1;
 	};
 }
 

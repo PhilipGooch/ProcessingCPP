@@ -14,7 +14,7 @@ namespace Processing
 	{
 		bool running = true;
 		setup();
-		if (!g_renderWindow)
+		if (!m_renderWindow)
 		{
 			std::cout << "Missing size() function." << std::endl;
 			running = false;
@@ -22,7 +22,7 @@ namespace Processing
 		while (running)
 		{
 			sf::Event event;
-			while (g_renderWindow->pollEvent(event))
+			while (m_renderWindow->pollEvent(event))
 			{
 				switch (event.type)
 				{
@@ -35,34 +35,34 @@ namespace Processing
 			draw();
 			display();
 		}
-		if (g_renderWindow)
+		if (m_renderWindow)
 		{
-			g_renderWindow->close();
+			m_renderWindow->close();
 		}
 		return;
 	}
 
 	void Application::display()
 	{
-		g_renderWindow->display();
+		m_renderWindow->display();
 	}
 
 	void Application::size(int width, int height)
 	{
-		g_renderWindow = new sf::RenderWindow(sf::VideoMode(width, height), "");
-		g_renderWindow->clear(g_backgroundColor);
-		g_renderWindow->display();
-		g_renderWindow->clear(g_backgroundColor);
+		m_renderWindow = new sf::RenderWindow(sf::VideoMode(width, height), "");
+		m_renderWindow->clear(m_backgroundColor);
+		m_renderWindow->display();
+		m_renderWindow->clear(m_backgroundColor);
 	}
 
 	void Application::rect(int x, int y, int a, int b)
 	{
 		sf::RectangleShape r;
-		r.setFillColor(g_fillColor);
-		r.setOutlineColor(g_strokeColor);
-		r.setOutlineThickness(g_strokeWeight);
+		r.setFillColor(m_fillColor);
+		r.setOutlineColor(m_strokeColor);
+		r.setOutlineThickness(m_strokeWeight);
 		r.setPosition(sf::Vector2f(x, y));
-		switch (g_rectMode)
+		switch (m_rectMode)
 		{
 		case CORNER:
 			r.setSize(sf::Vector2f(a, b));
@@ -79,70 +79,127 @@ namespace Processing
 			r.setSize(sf::Vector2f(a / 2, b / 2));
 			break;
 		}
-		g_renderWindow->draw(r);
+		m_renderWindow->draw(r);
+	}
+
+	void Application::circle(int x, int y, int extent)
+	{
+		sf::CircleShape c;
+		c.setFillColor(m_fillColor);
+		c.setOutlineColor(m_strokeColor);
+		c.setOutlineThickness(m_strokeWeight);
+		c.setPosition(sf::Vector2f(x, y));
+		c.setRadius(extent / 2);
+		c.setOrigin(sf::Vector2f(extent / 2, extent / 2));
+		m_renderWindow->draw(c);
+	}
+
+	void Application::ellipse(int x, int y, int a, int b)
+	{
+		int quality = 50;
+		sf::ConvexShape e;
+		e.setPointCount(quality);
+		e.setFillColor(m_fillColor);
+		e.setOutlineColor(m_strokeColor);
+		e.setOutlineThickness(m_strokeWeight);
+		e.setPosition(sf::Vector2f(x, y));
+		switch (m_ellipseMode)
+		{
+		case CENTER:
+			for (int i = 0; i < quality; i++)
+			{
+				float rad = (360 / quality * i) / (360 / PI / 2);
+				float px = cos(rad) * a;
+				float py = sin(rad) * b;
+				e.setPoint(i, sf::Vector2f(px, py));
+			}
+			break;
+		case RADIUS:
+			for (int i = 0; i < quality; i++)
+			{
+				float rad = (360 / quality * i) / (360 / PI / 2);
+				float px = cos(rad) * a / 2;
+				float py = sin(rad) * b / 2;
+				e.setPoint(i, sf::Vector2f(px, py));
+			}
+			break;
+		case CORNER:
+			break;
+		case CORNERS:
+			break;
+		default:
+			break;
+		}
+		
+		m_renderWindow->draw(e);
+	}
+
+	void Application::ellipseMode(MODE mode)
+	{
+		m_ellipseMode = mode;
 	}
 
 	void Application::background(float rgb)
 	{
-		g_renderWindow->clear(sf::Color(rgb, rgb, rgb));
+		m_renderWindow->clear(sf::Color(rgb, rgb, rgb));
 	}
 
 	void Application::background(float r, float g, float b)
 	{
-		g_renderWindow->clear(sf::Color(r, g, b));
+		m_renderWindow->clear(sf::Color(r, g, b));
 	}
 
-	void Application::rectMode(RECT_MODE mode)
+	void Application::rectMode(MODE mode)
 	{
-		g_rectMode = mode;
+		m_rectMode = mode;
 	}
 
 	void Application::fill(float rgb)
 	{
-		g_fillColor = sf::Color(rgb, rgb, rgb);
+		m_fillColor = sf::Color(rgb, rgb, rgb);
 	}
 
 	void Application::fill(float rgb, float a)
 	{
-		g_fillColor = sf::Color(rgb, rgb, rgb, a);
+		m_fillColor = sf::Color(rgb, rgb, rgb, a);
 	}
 
 	void Application::fill(float r, float g, float b)
 	{
-		g_fillColor = sf::Color(r, g, b);
+		m_fillColor = sf::Color(r, g, b);
 	}
 
 	void Application::fill(float r, float g, float b, float a)
 	{
-		g_fillColor = sf::Color(r, g, b, a);
+		m_fillColor = sf::Color(r, g, b, a);
 	}
 
 	void Application::stroke(float rgb)
 	{
-		g_strokeColor = sf::Color(rgb, rgb, rgb);
+		m_strokeColor = sf::Color(rgb, rgb, rgb);
 	}
 
 	void Application::stroke(float rgb, float a)
 	{
-		g_strokeColor = sf::Color(rgb, rgb, rgb, a);
+		m_strokeColor = sf::Color(rgb, rgb, rgb, a);
 	}
 
 	void Application::stroke(float r, float g, float b)
 	{
-		Application::g_strokeColor = sf::Color(r, g, b);
+		Application::m_strokeColor = sf::Color(r, g, b);
 	}
 
 	void Application::stroke(float r, float g, float b, float a)
 	{
-		Application::g_strokeColor = sf::Color(r, g, b, a);
+		Application::m_strokeColor = sf::Color(r, g, b, a);
 	}
 
 	void Application::strokeWeight(float weight)
 	{
-		g_strokeWeight = weight;
+		m_strokeWeight = weight;
 	}
 	void Application::noStroke()
 	{
-		g_strokeWeight = 0;
+		m_strokeWeight = 0;
 	}
 }
