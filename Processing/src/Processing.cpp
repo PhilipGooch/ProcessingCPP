@@ -12,6 +12,7 @@ namespace Processing
 
 	void Application::run()
 	{
+		sf::Clock clock;
 		bool running = true;
 		setup();
 		if (!m_renderWindow)
@@ -34,6 +35,7 @@ namespace Processing
 			update();
 			draw();
 			display();
+			std::cout << clock.restart().asMicroseconds() << std::endl;
 		}
 		if (m_renderWindow)
 		{
@@ -80,6 +82,92 @@ namespace Processing
 			break;
 		}
 		m_renderWindow->draw(r);
+	}
+
+	void Application::rect(int x, int y, int a, int b, int c)
+	{
+		int savedStrokeWeight = m_strokeWeight;
+		c = std::min(c, std::min((a - x) / 2, (b - y) / 2));
+		switch (m_rectMode)
+		{
+		case CORNER:
+			break;
+		case CORNERS:
+			rect(x, y + c, a, b - c);
+			rect(x + c, y, a - c, b);
+			circle(x + c, y + c, c * 2);
+			circle(a - c, y + c, c * 2);
+			circle(a - c, b - c, c * 2);
+			circle(x + c, b - c, c * 2);
+			noStroke();
+			rect(x, y + c, a, b - c);
+			rect(x + c, y, a - c, b);
+			circle(x + c, y + c, c * 2);
+			circle(a - c, y + c, c * 2);
+			circle(a - c, b - c, c * 2);
+			circle(x + c, b - c, c * 2);
+			stroke(savedStrokeWeight);
+			break;
+		case CENTER:
+			break;
+		case RADIUS:
+			break;
+		}
+	}
+
+	void Application::rect(int x, int y, int a, int b, int c, int d, int e, int f)
+	{
+		int savedStrokeWeight = m_strokeWeight;
+		//c = std::min(c, std::min((a - x) / 2, (b - y) / 2));
+		sf::ConvexShape convex;
+		switch (m_rectMode)
+		{
+		case CORNER:
+			break;
+		case CORNERS:
+			circle(x + c, y + c, c * 2);
+			circle(a - d, y + d, d * 2);
+			circle(a - e, b - e, e * 2);
+			circle(x + f, b - f, f * 2);
+			convex.setFillColor(m_fillColor);
+			convex.setOutlineColor(m_strokeColor);
+			convex.setOutlineThickness(m_strokeWeight);
+			convex.setPointCount(8);
+			convex.setPoint(0, sf::Vector2f(x, y + c));
+			convex.setPoint(1, sf::Vector2f(x + c, y));
+			convex.setPoint(2, sf::Vector2f(a - d, y));
+			convex.setPoint(3, sf::Vector2f(a, y + d));
+			convex.setPoint(4, sf::Vector2f(a, b - e));
+			convex.setPoint(5, sf::Vector2f(a - e, b));
+			convex.setPoint(6, sf::Vector2f(x + f, b));
+			convex.setPoint(7, sf::Vector2f(x, b - f));
+			m_renderWindow->draw(convex);
+			noStroke();
+			circle(x + c, y + c, c * 2);
+			circle(a - d, y + d, d * 2);
+			circle(a - e, b - e, e * 2);
+			circle(x + f, b - f, f * 2);
+			strokeWeight(savedStrokeWeight);
+			break;
+		case CENTER:
+			break;
+		case RADIUS:
+			break;
+		}
+	}
+
+	void Application::line(int ax, int ay, int bx, int by)
+	{
+		sf::ConvexShape convex;
+		convex.setFillColor(m_fillColor);
+		convex.setOutlineColor(m_strokeColor);
+		convex.setOutlineThickness(m_strokeWeight / 2);
+		convex.setPointCount(4);
+		convex.setPoint(0, sf::Vector2f(ax, ay));
+		convex.setPoint(1, sf::Vector2f(bx, by));
+		convex.setPoint(2, sf::Vector2f(bx, by));
+		convex.setPoint(3, sf::Vector2f(ax, ay));
+		m_renderWindow->draw(convex);
 	}
 
 	void Application::circle(int x, int y, int extent)

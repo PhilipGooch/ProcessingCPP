@@ -1,1 +1,3 @@
 outline not consistent with processing. outline outside in cpp. outline in middle, prioritising outside in processing.
+calling size() multiple times creates multiple windows.
+curves on rect not squirckly enough.

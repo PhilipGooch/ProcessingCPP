@@ -36,6 +36,9 @@ namespace Processing
 
 		void size(int width, int height);
 		void rect(int x, int y, int a, int b);
+		void rect(int x, int y, int a, int b, int c);
+		void rect(int x, int y, int a, int b, int c, int d, int e, int f);
+		void line(int ax, int ay, int bx, int by);
 		void circle(int x, int y, int r);
 		void ellipse(int x, int y, int a, int b);
 		void ellipseMode(MODE mode);
